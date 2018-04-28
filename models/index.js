@@ -1,2 +1,4 @@
-var Quiz = require("./quiz");
-exports.Quiz = Quiz;
+const quiz = require("./quiz");
+
+
+exports.quiz = quiz;

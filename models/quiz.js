@@ -50,10 +50,10 @@ exports.findById = (id) => {
 	return quizzes.find(quiz => quiz.id === id);
 };
 
-export.destroy = (quiz) => {
+exports.destroy = (quiz) => {
 	const index = quizzes.findIndex(q => quiz.id === q.id);
 
 	if (index >= 0) {
-		quizzes.splice(id, 1);
+		quizzes.splice(index, 1);
 	}
 };
