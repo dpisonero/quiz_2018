@@ -4,7 +4,10 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
+var SequelizeStore = require('connect-session-sequelize')(session.Store);
 var partials = require('express-partials');
+var flash = require('express-flash');
 var methodOverride = require('method-override');
 
 var routes = require('./routes/index');
@@ -23,8 +26,25 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// Session configuration to be stored in DB with Sequelize.
+var sequelize = require("./models");
+var sessionStore = new SequelizeStore({
+    db: sequelize,
+    table: "session",
+    checkExpirationInterval:15*60*1000, //cleaned expired sessions every 15 minutes
+    expiration: 4*60*60*1000 // 4 hours of maximum duration of session
+});
+app.use(session({
+    secret: "Quiz 2018",
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: true
+}));
+
 app.use(methodOverride('_method', {methods: ["POST", "GET"]}));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(flash());
 
 app.use('/', routes);
 
